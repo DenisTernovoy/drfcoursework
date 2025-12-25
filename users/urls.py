@@ -1,0 +1,11 @@
+from django.urls import path
+
+from users import views
+from users.apps import UsersConfig
+
+app_name = UsersConfig.name
+
+urlpatterns = [
+    path("register/", views.UserCreateAPIView.as_view(), name="user-create"),
+    path("list/", views.UserListAPIView.as_view(), name="user-list"),
+]

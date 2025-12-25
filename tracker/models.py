@@ -19,7 +19,9 @@ class Habit(models.Model):
         null=True,
     )
     periodicity = models.IntegerField(default=1, verbose_name="Периодичность в дн.")
-    reward = models.CharField(max_length=255, verbose_name="Вознаграждение", null=True, blank=True)
+    reward = models.CharField(
+        max_length=255, verbose_name="Вознаграждение", null=True, blank=True
+    )
     complete_time = models.SmallIntegerField(verbose_name="Время на выполнение в сек")
 
     publish = models.BooleanField(verbose_name="Признак публичности", default=True)
