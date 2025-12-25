@@ -5,7 +5,11 @@ from users.models import User
 
 class Habit(models.Model):
     owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="Пользователь"
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Пользователь",
+        null=True,
+        blank=True,
     )
     place = models.CharField(max_length=255, verbose_name="Место")
     time = models.TimeField(verbose_name="Время")
