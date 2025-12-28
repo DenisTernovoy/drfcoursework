@@ -6,6 +6,7 @@ from tracker.models import Habit
 from tracker.paginators import HabitPaginator
 from tracker.permissions import IsOwner
 from tracker.serializers import HabitSerializer
+from tracker.tasks import create_periodic_habit
 
 
 class HabitViewSet(ModelViewSet):
@@ -13,7 +14,11 @@ class HabitViewSet(ModelViewSet):
     pagination_class = HabitPaginator
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        instance = serializer.save(owner=self.request.user)
+
+        create_periodic_habit.delay(
+            instance.pk, instance.periodicity, instance.owner.chat_id, instance.time
+        )
 
     def get_queryset(self):
         queryset = Habit.objects.filter(Q(owner=self.request.user) | Q(publish=True))
