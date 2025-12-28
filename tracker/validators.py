@@ -23,11 +23,13 @@ class HabitValidator:
                 "Необходимо указать что-то одно: вознаграждение или связанную привычку"
             )
 
-        if int(complete_time) >= 120:
-            raise ValidationError("Время выполнения должно быть не больше 120 секунд")
+        if complete_time:
+            if int(complete_time) >= 120:
+                raise ValidationError(
+                    "Время выполнения должно быть не больше 120 секунд"
+                )
 
         if linked_habit:
-            print(type(linked_habit))
             if not linked_habit.pleasant_habit:
                 raise ValidationError(
                     "В связанные привычки могут попадать только привычки с признаком приятной привычки"
@@ -39,5 +41,8 @@ class HabitValidator:
                     "У приятной привычки не может быть вознаграждения или связанной привычки"
                 )
 
-        if int(periodicity) > 7:
-            raise ValidationError("Нельзя выполнять привычку реже, чем 1 раз в 7 дней")
+        if periodicity:
+            if int(periodicity) > 7:
+                raise ValidationError(
+                    "Нельзя выполнять привычку реже, чем 1 раз в 7 дней"
+                )
