@@ -1,3 +1,6 @@
+from typing import Any
+
+import django.db.models
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
@@ -10,21 +13,29 @@ from tracker.tasks import create_periodic_habit
 
 
 class HabitViewSet(ModelViewSet):
+    """Вьюсет для модели привычки"""
+
     serializer_class = HabitSerializer
     pagination_class = HabitPaginator
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer) -> None:
+        """Переопредление создания объекта модели"""
+
         instance = serializer.save(owner=self.request.user)
 
         create_periodic_habit.delay(
             instance.pk, instance.periodicity, instance.owner.chat_id, instance.time
         )
 
-    def get_queryset(self):
+    def get_queryset(self) -> django.db.models.QuerySet:
+        """Переопределение получения QuerySet"""
+
         queryset = Habit.objects.filter(Q(owner=self.request.user) | Q(publish=True))
         return queryset
 
-    def get_permissions(self):
+    def get_permissions(self) -> Any:
+        """Переопределение получения списка разрешений"""
+
         if self.action == "list":
             self.permission_classes = [
                 IsAuthenticated,

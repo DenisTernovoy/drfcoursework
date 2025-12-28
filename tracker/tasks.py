@@ -14,6 +14,7 @@ from tracker.models import Habit
 def create_periodic_habit(
     id_habit: int, periodicity: int, chat_id: str, time: datetime.time
 ) -> None:
+    """Создание периодической задачи на основе созданной привычки"""
 
     if chat_id:
         # базовая дата — сегодня
@@ -26,7 +27,7 @@ def create_periodic_habit(
         """Создаем интервал для повтора"""
         schedule, created = IntervalSchedule.objects.get_or_create(
             every=periodicity,
-            period=IntervalSchedule.MINUTES,
+            period=IntervalSchedule.DAYS,
         )
 
         # Создаем задачу для повторения
@@ -41,6 +42,8 @@ def create_periodic_habit(
 
 @shared_task
 def send_telegram_notification(id_habit: int, chat_id: str) -> None:
+    """Отправка сообщения в телеграм пользователю о напоминании выполнить привычку"""
+
     habit = str(Habit.objects.get(pk=id_habit))
     data = {
         "chat_id": chat_id,
