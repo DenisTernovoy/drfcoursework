@@ -108,6 +108,8 @@ REST_FRAMEWORK = {
     ],
 }
 
+BASE_SERVER_URL = os.getenv("BASE_SERVER_URL")
+
 # Настройки срока действия токенов
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -115,11 +117,11 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    os.getenv("BASE_SERVER_URL"),
+    BASE_SERVER_URL,
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    os.getenv("BASE_SERVER_URL"),
+    BASE_SERVER_URL,
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False

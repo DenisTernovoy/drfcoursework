@@ -1,6 +1,5 @@
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from tracker.models import Habit
@@ -14,7 +13,7 @@ class HabitViewSet(ModelViewSet):
     pagination_class = HabitPaginator
 
     def perform_create(self, serializer):
-        instance = serializer.save(owner=self.request.user)
+        serializer.save(owner=self.request.user)
 
     def get_queryset(self):
         queryset = Habit.objects.filter(Q(owner=self.request.user) | Q(publish=True))
