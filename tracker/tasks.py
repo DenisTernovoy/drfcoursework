@@ -40,11 +40,12 @@ def create_periodic_habit(
         )
 
 
-@shared_task
-def send_telegram_notification(id_habit: int, chat_id: str) -> None:
+@shared_task(bind=True)
+def send_telegram_notification(self, id_habit: int, chat_id: str) -> None:
     """Отправка сообщения в телеграм пользователю о напоминании выполнить привычку"""
 
-    habit = str(Habit.objects.get(pk=id_habit))
+    habit = Habit.objects.get(pk=id_habit)
+
     data = {
         "chat_id": chat_id,
         "text": f"Через 1 час мне нужно выполнить следующую привычку:\n{habit}",
@@ -55,4 +56,4 @@ def send_telegram_notification(id_habit: int, chat_id: str) -> None:
     try:
         requests.post(url, data=data)
     except Exception as exc:
-        raise send_telegram_notification.retry(countdown=60, exc=exc)
+        raise self.retry(countdown=60, exc=exc)
