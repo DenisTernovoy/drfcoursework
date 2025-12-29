@@ -52,4 +52,7 @@ def send_telegram_notification(id_habit: int, chat_id: str) -> None:
 
     url = f"https://api.telegram.org/bot{settings.BOT_TOKEN}/sendMessage"
 
-    requests.post(url, data=data)
+    try:
+        requests.post(url, data=data)
+    except Exception as exc:
+        raise send_telegram_notification.retry(countdown=60, exc=exc)
