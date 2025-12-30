@@ -1,7 +1,6 @@
 from typing import Any
 
-import django.db.models
-from django.db.models import Q
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
@@ -27,10 +26,10 @@ class HabitViewSet(ModelViewSet):
             instance.pk, instance.periodicity, instance.owner.chat_id, instance.time
         )
 
-    def get_queryset(self) -> django.db.models.QuerySet:
-        """Переопределение получения QuerySet"""
+    def get_queryset(self):
+        """Получение QuerySet модели привычки"""
 
-        queryset = Habit.objects.filter(Q(owner=self.request.user) | Q(publish=True))
+        queryset = Habit.objects.filter(owner=self.request.user)
         return queryset
 
     def get_permissions(self) -> Any:
@@ -44,3 +43,10 @@ class HabitViewSet(ModelViewSet):
             self.permission_classes = [IsOwner, IsAuthenticated]
 
         return super().get_permissions()
+
+
+class HabitListAPIView(ListAPIView):
+    """Эндпоинт для списка публичных привычек"""
+
+    serializer_class = HabitSerializer
+    queryset = Habit.objects.filter(publish=True)
