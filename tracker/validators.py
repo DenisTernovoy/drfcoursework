@@ -24,7 +24,12 @@ class HabitValidator:
             )
 
         if complete_time:
-            if int(complete_time) >= 120:
+            summary_sec = (
+                complete_time.second
+                + complete_time.minute * 60
+                + complete_time.hour * 3600
+            )
+            if summary_sec > 120:
                 raise ValidationError(
                     "Время выполнения должно быть не больше 120 секунд"
                 )
