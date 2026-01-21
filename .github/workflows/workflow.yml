@@ -55,7 +55,7 @@ jobs:
           key: poetry-${{ hashFiles('poetry.lock') }}
 
       - name: Install dependencies
-        run: poetry install --with dev --no-interaction --no-ansi
+        run: poetry install --with dev --no-interaction --no-ansi --no-root
 
       - name: Run tests
         env:
