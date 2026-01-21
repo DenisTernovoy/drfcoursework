@@ -121,9 +121,8 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:8000", "http://0.0.0.0:5432", "http://0.0.0.0:8000"]
-
-# CSRF_TRUSTED_ORIGINS = [BASE_SERVER_URL, "http://localhost:8000", "*", "://"]
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(";")
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(";")
 
 CORS_ALLOW_ALL_ORIGINS = True
 
