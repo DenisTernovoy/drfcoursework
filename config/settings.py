@@ -125,9 +125,9 @@ CORS_ALLOWED_ORIGINS = [
     BASE_SERVER_URL,
 ]
 
-CSRF_TRUSTED_ORIGINS = [BASE_SERVER_URL, "http://localhost", "*", "://"]
+# CSRF_TRUSTED_ORIGINS = [BASE_SERVER_URL, "http://localhost", "*", "://"]
 
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Celery Configuration Options
 CELERY_TIMEZONE = TIME_ZONE
