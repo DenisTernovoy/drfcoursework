@@ -98,7 +98,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd drfcoursework/
             sudo docker compose stop || true
-            sudo socker compose pull
+            sudo docker compose pull
             sudo docker compose up --build -d
           EOF
     
