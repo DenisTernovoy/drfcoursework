@@ -1,0 +1,68 @@
+services:
+  db:
+    image: postgres:15.1-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -U ${DB_USER} -d ${DB_NAME}"
+      interval: 3s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:8.0-alpine
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 3s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build: .
+    command: >
+      bash -c "python manage.py migrate && python manage.py collectstatic -c --no-input && python manage.py runserver 0.0.0.0:8000"
+    env_file: .env
+    environment:
+      DB_HOST: db
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - static_volume:/drf/static
+      - media_volume:/drf/media
+  web:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_started
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/drf/static
+      - media_volume:/drf/media
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:
+  media_volume:

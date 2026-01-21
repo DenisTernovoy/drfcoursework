@@ -1,0 +1,10 @@
+**
+!config
+!tests
+!tracker
+!users
+!manage.py
+!poetry.lock
+!pyproject.toml
+!.flake8
+!.env.sample

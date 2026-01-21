@@ -1,3 +1,5 @@
+from unittest import mock
+
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse
@@ -11,7 +13,6 @@ class HabitTestCase(APITestCase):
     """Тестирование модели привычки"""
 
     def setUp(self) -> None:
-        super().setUp()
 
         self.user = User.objects.create(email="admin@admin.com", password=12345)
 
@@ -21,7 +22,7 @@ class HabitTestCase(APITestCase):
             action="Прогуляться",
             pleasant_habit=True,
             periodicity=1,
-            complete_time=100,
+            complete_time="00:01:00",
             publish=True,
             owner=self.user,
         )
@@ -32,14 +33,15 @@ class HabitTestCase(APITestCase):
             action="Уборка",
             pleasant_habit=False,
             periodicity=1,
-            complete_time=100,
+            complete_time="00:01:00",
             publish=True,
             owner=self.user,
         )
 
         self.client.force_authenticate(user=self.user)
 
-    def test_create_pleasant_habit(self) -> None:
+    @mock.patch("tracker.tasks.create_periodic_habit.delay")
+    def test_create_pleasant_habit(self, mock_delay) -> None:
         """Тестирование создания привычки"""
 
         url = reverse("tracker:habits-list")
@@ -50,7 +52,7 @@ class HabitTestCase(APITestCase):
             "action": "Делать упражнения",
             "pleasant_habit": False,
             "periodicity": 1,
-            "complete_time": 100,
+            "complete_time": "00:01:00",
             "publish": True,
             "linked_habit": self.habit_pleasant.pk,
         }
@@ -117,7 +119,7 @@ class HabitTestCase(APITestCase):
             "action": "Делать упражнения",
             "pleasant_habit": False,
             "periodicity": 1,
-            "complete_time": 100,
+            "complete_time": "00:00:30",
             "publish": True,
             "linked_habit": self.habit_pleasant.pk,
             "reward": "Скушать пирожок",
@@ -145,7 +147,7 @@ class HabitTestCase(APITestCase):
             "action": "Делать упражнения",
             "pleasant_habit": False,
             "periodicity": 1,
-            "complete_time": 140,
+            "complete_time": "00:03:00",
             "publish": True,
             "linked_habit": self.habit_pleasant.pk,
         }
@@ -171,7 +173,7 @@ class HabitTestCase(APITestCase):
             "action": "Делать упражнения",
             "pleasant_habit": False,
             "periodicity": 8,
-            "complete_time": 100,
+            "complete_time": "00:00:30",
             "publish": True,
             "linked_habit": self.habit.pk,
         }
@@ -197,7 +199,7 @@ class HabitTestCase(APITestCase):
             "action": "Делать упражнения",
             "pleasant_habit": True,
             "periodicity": 1,
-            "complete_time": 100,
+            "complete_time": "00:00:30",
             "publish": True,
             "linked_habit": self.habit_pleasant.pk,
         }
@@ -223,7 +225,7 @@ class HabitTestCase(APITestCase):
             "action": "Делать упражнения",
             "pleasant_habit": False,
             "periodicity": 8,
-            "complete_time": 100,
+            "complete_time": "00:00:30",
             "publish": True,
             "linked_habit": self.habit_pleasant.pk,
         }
