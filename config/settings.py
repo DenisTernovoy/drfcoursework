@@ -125,7 +125,7 @@ CORS_ALLOWED_ORIGINS = [
     BASE_SERVER_URL,
 ]
 
-CSRF_TRUSTED_ORIGINS = [BASE_SERVER_URL, "http://localhost"]
+CSRF_TRUSTED_ORIGINS = [BASE_SERVER_URL, "http://localhost", "*", "://"]
 
 CORS_ALLOW_ALL_ORIGINS = False
 
