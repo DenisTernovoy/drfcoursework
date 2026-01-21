@@ -29,6 +29,14 @@ jobs:
     needs: linter
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:17.1-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -56,10 +64,11 @@ jobs:
 
       - name: Run tests
         env:
-          NAME: drfcoursework
-          USER: postgres
-          PASSWORD: postgres
-          HOST: localhost
+          DB_NAME: postgres
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
           DJANGO_SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: poetry run python manage.py test
 
