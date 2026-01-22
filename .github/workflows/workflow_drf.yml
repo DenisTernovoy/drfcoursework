@@ -96,7 +96,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd drfcoursework/ 
-            sudo docker compose down || true
+            sudo docker compose stop || true
           EOF
       - name: Pull image
         run: |
@@ -107,5 +107,5 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd drfcoursework/
-            sudo docker compose up --build -d
+            sudo docker compose up -d
           EOF
