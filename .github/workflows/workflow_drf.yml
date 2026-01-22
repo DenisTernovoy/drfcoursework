@@ -26,7 +26,6 @@ jobs:
           black .
 
   test:
-    needs: linter
     runs-on: ubuntu-latest
 
     services:
@@ -67,7 +66,7 @@ jobs:
         run: poetry run python3 manage.py test
 
   build:
-    needs: test
+    needs: [linter, test]
     runs-on: ubuntu-latest
 
     steps:
