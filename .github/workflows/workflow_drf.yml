@@ -92,13 +92,19 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Deploy to Server
+      - name: Stop compose
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd drfcoursework/ 
             sudo docker compose down || true
-            sudo docker stop ${{ secrets.DOCKER_HUB_USERNAME }}/drfcoursework || true
-            sudo docker rm ${{ secrets.DOCKER_HUB_USERNAME }}/drfcoursework || true
+          EOF
+      - name: Pull image
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/drfcoursework
+          EOF
+      - name: Run compose
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             sudo docker compose up --build -d
-          EOF   
+          EOF
