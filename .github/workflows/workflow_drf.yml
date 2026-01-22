@@ -96,11 +96,11 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            cd drfcoursework/ 
             sudo docker compose down || true
             sudo docker stop ${{ secrets.DOCKER_HUB_USERNAME }}/drfcoursework || true
             sudo docker rm ${{ secrets.DOCKER_HUB_USERNAME }}/drfcoursework || true
             sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/drfcoursework
-            cd drfcoursework/ 
             sudo docker compose up --build -d
           EOF
     
