@@ -70,7 +70,7 @@ services:
 
   celery:
     image: denistern/drfcoursework
-    command: celery -A config worker -l INFO -P eventlet
+    command: poetry run celery -A config worker -l INFO
     env_file:
       - .env
     environment:
@@ -78,16 +78,22 @@ services:
     depends_on:
       backend:
          condition: service_started
+    healthcheck:
+      test: "poetry run celery -A config inspect ping"
+      interval: 3s
+      timeout: 3s
+      retries: 5
+
   beat:
     image: denistern/drfcoursework
-    command: celery -A config beat -l info -S django
+    command: poetry run celery -A config beat -l info -S django
     env_file:
       - .env
     environment:
       - DB_HOST=db
     depends_on:
       celery:
-        condition: service_started
+        condition: service_healthy
 
 volumes:
   postgres_data:
