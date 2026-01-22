@@ -100,6 +100,6 @@ jobs:
             sudo docker stop ${{ secrets.DOCKER_HUB_USERNAME }}/drfcoursework || true
             sudo docker rm ${{ secrets.DOCKER_HUB_USERNAME }}/drfcoursework || true
             sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/drfcoursework
-            sudo docker compose up --build -d
+            sudo docker compose up --wait -d
           EOF
     
